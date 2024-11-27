@@ -1,50 +1,59 @@
-import { AppBar, Button, Drawer, IconButton, List, ListItem, Toolbar, Typography } from "@mui/material";
-import React, { useState } from "react";
-
-import { Link } from "react-router-dom";
-// src/components/Navbar.tsx
-import MenuIcon from "@mui/icons-material/Menu";
+import { AppBar, Box, Button, Toolbar, Typography } from "@mui/material";
+import { Link, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 
 const Navbar: React.FC = () => {
-    const [drawerOpen, setDrawerOpen] = useState(false);
+    const navigate = useNavigate();
+    const [user, setUser] = useState<any>(null);
 
-    const toggleDrawer = (open: boolean) => () => {
-        setDrawerOpen(open);
+    useEffect(() => {
+        const loadUser = () => {
+            const loggedInUser = JSON.parse(localStorage.getItem("user") || "null");
+            setUser(loggedInUser);
+        };
+
+        loadUser();
+
+        window.addEventListener("storage", loadUser);
+
+        return () => {
+            window.removeEventListener("storage", loadUser);
+        };
+    }, []);
+
+    const handleLogout = () => {
+        localStorage.removeItem("user");
+        setUser(null);
+        navigate("/login");
     };
 
     return (
-        <>
-            <AppBar position="sticky" color="primary">
-                <Toolbar>
-                    <IconButton edge="start" color="inherit" onClick={toggleDrawer(true)}>
-                        <MenuIcon />
-                    </IconButton>
-                    <Typography variant="h6" style={{ flexGrow: 1 }}>
-                        Interest Sharing Platform
-                    </Typography>
-                </Toolbar>
-            </AppBar>
-
-            <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
-                <List>
-                    <ListItem>
-                        <Link to="/" style={{ textDecoration: "none" }}>
-                            <Button color="primary">Home</Button>
+        <AppBar position="sticky" sx={{ backgroundColor: "#1976d2" }}>
+            <Toolbar>
+                <Typography variant="h6" sx={{ flexGrow: 1 }}>
+                    Interest Sharing Platform
+                </Typography>
+                <Box display="flex" alignItems="center">
+                    {user && user.username ? (
+                        <>
+                            <Link to="/home" style={{ textDecoration: "none", marginRight: "10px" }}>
+                                <Button color="inherit" sx={{ color: "white" }}>Home</Button>
+                            </Link>
+                            <Link to="/profile" style={{ textDecoration: "none", marginRight: "10px" }}>
+                                <Button color="inherit" sx={{ color: "white" }}>Profile</Button>
+                            </Link>
+                            <Button color="inherit" sx={{ color: "white" }} onClick={handleLogout}>
+                                Logout
+                            </Button>
+                        </>
+                    ) : (
+                        <Link to="/login" style={{ textDecoration: "none" }}>
+                            <Button color="inherit" sx={{ color: "white" }}>Login</Button>
                         </Link>
-                    </ListItem>
-                    <ListItem>
-                        <Link to="/explore" style={{ textDecoration: "none" }}>
-                            <Button color="primary">Explore</Button>
-                        </Link>
-                    </ListItem>
-                    <ListItem>
-                        <Link to="/profile" style={{ textDecoration: "none" }}>
-                            <Button color="primary">Profile</Button>
-                        </Link>
-                    </ListItem>
-                </List>
-            </Drawer>
-        </>
+                    )}
+                </Box>
+            </Toolbar>
+        </AppBar>
     );
 };
 
