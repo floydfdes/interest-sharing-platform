@@ -1,7 +1,6 @@
-import { Box, Container, Grid, Paper, TextField, Typography } from "@mui/material";
+import { Box, Button, Container, Grid, Paper, TextField, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
 import { useNavigate } from "react-router-dom";
 import { fetchPosts } from "../redux/postSlice";
 import { AppDispatch } from "../redux/store";
@@ -16,17 +15,17 @@ const ExplorePage: React.FC = () => {
     useEffect(() => {
         dispatch(fetchPosts());
     }, [dispatch]);
-
-
     const filteredPosts = posts.filter((post: any) =>
-        post.tags.some((tag: string) => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+        post.tags?.some((tag: string) => tag.toLowerCase().includes(searchQuery.toLowerCase())) || searchQuery === ""
     );
-
 
     const handlePostClick = (postId: string) => {
         navigate(`/post/${postId}`);
     };
 
+    const handleCreatePost = () => {
+        navigate('/create-post');
+    };
 
     if (loading) return <Typography>Loading posts...</Typography>;
     if (error) return <Typography>Error: {error}</Typography>;
@@ -41,14 +40,24 @@ const ExplorePage: React.FC = () => {
                     Discover posts about various interests and passions.
                 </Typography>
 
-                <TextField
-                    label="Search Interests"
-                    variant="outlined"
-                    fullWidth
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    style={{ marginBottom: "30px" }}
-                />
+
+                <Box display="flex" alignItems="center" style={{ marginBottom: "30px" }}>
+                    <TextField
+                        label="Search Interests"
+                        variant="outlined"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        style={{ marginRight: "10px", width: '300px', height: '56px' }}
+                    />
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleCreatePost}
+                        style={{ height: '56px' }}
+                    >
+                        Create Post
+                    </Button>
+                </Box>
 
                 {filteredPosts.length > 0 ? (
                     <Grid container spacing={3}>

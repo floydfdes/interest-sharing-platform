@@ -4,6 +4,7 @@ import { CssBaseline } from "@mui/material";
 import React from "react";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
+import CreatePostPage from "./pages/CreatePostPage";
 import ExplorePage from "./pages/ExplorePage";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
@@ -18,6 +19,7 @@ const App: React.FC = () => {
       <Navbar />
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/create-post" element={<CreatePostPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/home" element={<HomePage />} />
         <Route path="/explore" element={<ExplorePage />} />
