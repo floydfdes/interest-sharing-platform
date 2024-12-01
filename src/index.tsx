@@ -1,10 +1,12 @@
 import './index.css';
 
-import App from './App';
 import CssBaseline from "@mui/material/CssBaseline";
+import { ThemeProvider } from "@mui/material/styles";
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { ThemeProvider } from "@mui/material/styles";
+import { Provider } from 'react-redux';
+import App from './App';
+import store from './redux/store';
 import reportWebVitals from './reportWebVitals';
 import theme from "./styles/theme";
 
@@ -15,7 +17,9 @@ root.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <App />
+      <Provider store={store}>
+        <App />
+      </Provider>
     </ThemeProvider>
   </React.StrictMode>
 );

@@ -1,40 +1,38 @@
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 import { useNavigate } from "react-router-dom";
-import { users } from "../data/data";
+import { AppDispatch } from "../redux/store";
+import { registerUser } from "../redux/userSlice";
 
 const SignupPage: React.FC = () => {
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
 
-    const handleSignup = () => {
+
+    const { loading, error: reduxError } = useSelector((state: any) => state.user);
+
+    const handleSignup = async () => {
+
         if (!username || !email || !password) {
             setError("All fields are required");
             return;
         }
 
-        const existingUser = users.find((user) => user.username === username || user.email === email);
+        try {
 
-        if (existingUser) {
-            setError("Username or email already exists");
-            return;
+            await dispatch(registerUser({ username, email, password }));
+
+            navigate("/home");
+        } catch (err) {
+            console.error("Signup failed:", reduxError);
+            setError(reduxError || "An error occurred during signup");
         }
-
-        const newUser = {
-            id: (users.length + 1).toString(),
-            username,
-            email,
-            password,
-            profilePic: "https://picsum.photos/200/300",
-        };
-
-        users.push(newUser);
-        localStorage.setItem("user", JSON.stringify(newUser));
-        navigate("/home");
     };
 
     return (
@@ -73,9 +71,10 @@ const SignupPage: React.FC = () => {
                 color="primary"
                 onClick={handleSignup}
                 fullWidth
+                disabled={loading}
                 style={{ marginBottom: "20px" }}
             >
-                Signup
+                {loading ? "Signing up..." : "Signup"}
             </Button>
             <Box display="flex" justifyContent="center">
                 <Typography variant="body2">

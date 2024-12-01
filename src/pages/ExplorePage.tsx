@@ -3,8 +3,8 @@
 import { Box, Container, Grid, Paper, TextField, Typography } from "@mui/material";
 import React, { useState } from "react";
 
-import { posts } from "../data/data";
 import { useNavigate } from "react-router-dom";
+import { posts } from "../data/data";
 
 const ExplorePage: React.FC = () => {
     const [searchQuery, setSearchQuery] = useState("");
@@ -20,9 +20,9 @@ const ExplorePage: React.FC = () => {
     };
 
     return (
-        <Container maxWidth="md" style={{ paddingTop: "50px" }}>
+        <Container maxWidth="lg" style={{ paddingTop: "60px" }}>
             <Box display="flex" flexDirection="column" alignItems="center">
-                <Typography variant="h3" gutterBottom>
+                <Typography variant="h3" gutterBottom style={{ fontWeight: "bold" }}>
                     Explore Interests
                 </Typography>
                 <Typography variant="h6" style={{ textAlign: "center", marginBottom: "20px" }}>
@@ -40,10 +40,19 @@ const ExplorePage: React.FC = () => {
 
                 <Grid container spacing={3}>
                     {filteredPosts.map((post) => (
-                        <Grid item xs={12} sm={4} key={post.id}>
+                        <Grid item xs={12} sm={6} md={4} key={post.id}>
                             <Paper
                                 elevation={3}
-                                style={{ padding: "20px", cursor: "pointer" }}
+                                sx={{
+                                    padding: "20px",
+                                    cursor: "pointer",
+                                    borderRadius: "15px",
+                                    transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                                    "&:hover": {
+                                        transform: "scale(1.05)",
+                                        boxShadow: "0 8px 20px rgba(0, 0, 0, 0.1)",
+                                    },
+                                }}
                                 onClick={() => handlePostClick(post.id)}
                             >
                                 <img src={post.imageUrl} alt={post.title} style={{ width: "100%", borderRadius: "8px" }} />

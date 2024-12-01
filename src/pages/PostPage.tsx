@@ -1,12 +1,12 @@
 import { Box, Button, TextField, Typography } from "@mui/material";
 import React, { useState } from "react";
 
-import { posts } from "../data/data";
 import { useParams } from "react-router-dom";
+import { posts } from "../data/data";
 
 const PostDetailPage: React.FC = () => {
     const { id } = useParams();
-    const [currentPost, setCurrentPost] = useState(() => posts.find((post) => post.id == id));
+    const [currentPost, setCurrentPost] = useState(() => posts.find((post) => post.id === id));
     const [newComment, setNewComment] = useState("");
     const [isEditing, setIsEditing] = useState(false);
     const [editedContent, setEditedContent] = useState(currentPost?.content || "");
@@ -50,8 +50,18 @@ const PostDetailPage: React.FC = () => {
 
     return (
         <Box p={3}>
-            <Typography variant="h4">{currentPost.title}</Typography>
-            <img src={currentPost.imageUrl} alt={currentPost.title} style={{ width: "100%", margin: "20px 0" }} />
+            <Typography variant="h4" style={{ fontWeight: "bold" }}>{currentPost.title}</Typography>
+            <img
+                src={currentPost.imageUrl}
+                alt={currentPost.title}
+                style={{
+                    width: "100%",
+                    maxHeight: "400px",
+                    objectFit: "cover",
+                    borderRadius: "8px",
+                    margin: "20px 0"
+                }}
+            />
             <Typography variant="body1" paragraph>
                 {isEditing ? (
                     <TextField

@@ -1,22 +1,29 @@
+// src/pages/LoginPage.tsx
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 import { useNavigate } from "react-router-dom";
-import { users } from "../data/data";
+import { AppDispatch } from "../redux/store";
+import { loginUser } from "../redux/userSlice";
 
 const LoginPage: React.FC = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
+    const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
 
-    const handleLogin = () => {
-        const user = users.find((user) => user.username === username);
-        if (user && password === user.password) {
-            localStorage.setItem("user", JSON.stringify(user));
-            navigate("/home");
-        } else {
-            setError("Invalid username or password");
+    const { loading, error, user } = useSelector((state: any) => state.user);
+
+    const handleLogin = async () => {
+        try {
+            await dispatch(loginUser({ email: username, password: password }));
+
+            if (user) {
+                navigate("/home");
+            }
+        } catch (err) {
+            console.error("Login failed:", error);
         }
     };
 
@@ -27,7 +34,7 @@ const LoginPage: React.FC = () => {
             </Typography>
             {error && <Typography color="error" gutterBottom>{error}</Typography>}
             <TextField
-                label="Username"
+                label="Username (Email)"
                 variant="outlined"
                 fullWidth
                 value={username}
@@ -48,9 +55,10 @@ const LoginPage: React.FC = () => {
                 color="primary"
                 onClick={handleLogin}
                 fullWidth
+                disabled={loading} // Disable the button when loading
                 style={{ marginBottom: "20px" }}
             >
-                Login
+                {loading ? "Logging in..." : "Login"}
             </Button>
             <Box display="flex" justifyContent="center">
                 <Typography variant="body2">

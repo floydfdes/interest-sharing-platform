@@ -1,29 +1,40 @@
 import { Avatar, Box, Button, Container, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 import { useNavigate } from "react-router-dom";
-import { users } from "../data/data";
+import { AppDispatch } from "../redux/store";
+import { fetchUserProfile } from "../redux/userSlice";
 
 const ProfilePage: React.FC = () => {
-    const [user, setUser] = useState<any>(null);
+    const [error, setError] = useState<string | null>(null);
+    const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
 
+    const { user, loading, error: reduxError } = useSelector((state: any) => state.user);
+
     useEffect(() => {
-        const loggedInUser = JSON.parse(localStorage.getItem("user") || "null");
+        const loggedInUser = JSON.parse(localStorage.getItem("profile") || "null");
         if (loggedInUser) {
-            const currentUser = users.find((u) => u.id === loggedInUser.id);
-            setUser(currentUser);
+            dispatch(fetchUserProfile());
         } else {
             navigate("/login");
         }
-    }, [navigate]);
+    }, [dispatch, navigate]);
+
+    useEffect(() => {
+        if (reduxError) {
+            setError(reduxError);
+        }
+    }, [reduxError]);
 
     const handleLogout = () => {
-        localStorage.removeItem("user");
+        localStorage.removeItem("profile");
         navigate("/login");
     };
 
-    if (!user) return <div>Loading...</div>;
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error: {error}</div>;
 
     return (
         <Container maxWidth="md" style={{ paddingTop: "50px" }}>
