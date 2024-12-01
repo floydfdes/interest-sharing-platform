@@ -58,7 +58,7 @@ const userSlice = createSlice({
             .addCase(registerUser.fulfilled, (state, action) => {
                 state.loading = false;
                 state.user = action.payload.user;
-                localStorage.setItem('profile', JSON.stringify(action.payload.user));
+                localStorage.setItem('profile', JSON.stringify(action.payload));
             })
             .addCase(registerUser.rejected, (state, action) => {
                 state.loading = false;
@@ -71,7 +71,7 @@ const userSlice = createSlice({
             .addCase(loginUser.fulfilled, (state, action) => {
                 state.loading = false;
                 state.user = action.payload.user;
-                localStorage.setItem('profile', JSON.stringify(action.payload.user));
+                localStorage.setItem('profile', JSON.stringify(action.payload));
             })
             .addCase(loginUser.rejected, (state, action) => {
                 state.loading = false;

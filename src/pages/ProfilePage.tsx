@@ -36,6 +36,24 @@ const ProfilePage: React.FC = () => {
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
 
+    // Handle the case where the user is undefined or null
+    if (!user) {
+        return (
+            <Container maxWidth="sm" style={{ paddingTop: "50px", textAlign: "center" }}>
+                <Typography variant="h6" color="error" gutterBottom>
+                    No user data available.
+                </Typography>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => navigate("/login")}
+                >
+                    Go to Login
+                </Button>
+            </Container>
+        );
+    }
+
     return (
         <Container maxWidth="md" style={{ paddingTop: "50px" }}>
             <Box display="flex" flexDirection="column" alignItems="center">

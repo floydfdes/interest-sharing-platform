@@ -17,9 +17,8 @@ const LoginPage: React.FC = () => {
 
     const handleLogin = async () => {
         try {
-            await dispatch(loginUser({ email: username, password: password }));
-
-            if (user) {
+            const response: any = await dispatch(loginUser({ email: username, password: password }));
+            if (response.payload.user) {
                 navigate("/home");
             }
         } catch (err) {

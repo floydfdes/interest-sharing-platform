@@ -10,19 +10,15 @@ const Navbar: React.FC = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch<AppDispatch>();
 
-    // Access user and authentication state from Redux
-    const { user, isAuthenticated } = useSelector((state: any) => state.user);
-    console.log(user, isAuthenticated);
+    const { user } = useSelector((state: any) => state.user);
 
     useEffect(() => {
-        // Fetch user profile if authenticated
-        if (isAuthenticated) {
+        if (user && user.username) {
             dispatch(fetchUserProfile());
         }
-    }, [isAuthenticated, dispatch]);
+    }, [dispatch]);
 
     const handleLogout = () => {
-        // Dispatch logout action
         dispatch(logout());
         navigate("/login");
     };
@@ -40,7 +36,7 @@ const Navbar: React.FC = () => {
                     Interest Sharing Platform
                 </Typography>
                 <Box display="flex" alignItems="center">
-                    {isAuthenticated && user ? (
+                    {user && user.username ? (
                         <>
                             <Link
                                 to="/home"

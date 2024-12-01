@@ -1,10 +1,21 @@
 import { Box, Button, Container, Grid, Paper, Typography } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
 import { useNavigate } from "react-router-dom";
-import { featuredPosts } from "../data/data";
+import { fetchPosts } from "../redux/postSlice"; // Import fetchPosts action
+import { AppDispatch } from "../redux/store"; // Import AppDispatch type
 
 const HomePage: React.FC = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch<AppDispatch>();
+
+    // Access posts and loading state from Redux store
+    const { posts, loading, error } = useSelector((state: any) => state.posts);
+
+    useEffect(() => {
+        dispatch(fetchPosts()); // Fetch posts on component mount
+    }, [dispatch]);
 
     const handleExploreInterests = () => {
         navigate("/explore");
@@ -14,6 +25,9 @@ const HomePage: React.FC = () => {
         navigate(`/post/${postId}`);
     };
 
+    // Show loading or error message if necessary
+    if (loading) return <Typography>Loading posts...</Typography>;
+    if (error) return <Typography>Error: {error}</Typography>;
 
     return (
         <Container maxWidth="lg" style={{ paddingTop: "60px" }}>
@@ -49,11 +63,15 @@ const HomePage: React.FC = () => {
             </Box>
 
             {/* Featured Posts Section */}
-            <Typography variant="h3" style={{ margin: "40px 0", fontWeight: "bold", textAlign: "center" }}>
+            <Typography
+                variant="h3"
+                style={{ margin: "40px 0", fontWeight: "bold", textAlign: "center" }}
+            >
                 Featured Posts
             </Typography>
             <Grid container spacing={3}>
-                {featuredPosts.map((post) => (
+                {/* Render only the first 5 posts */}
+                {posts.slice(0, 5).map((post: any) => (
                     <Grid item xs={12} sm={6} md={4} key={post.id}>
                         <Paper
                             elevation={6}
@@ -94,7 +112,10 @@ const HomePage: React.FC = () => {
                                     color: "white",
                                 }}
                             >
-                                <Typography variant="h6" style={{ fontWeight: "bold", marginBottom: "10px" }}>
+                                <Typography
+                                    variant="h6"
+                                    style={{ fontWeight: "bold", marginBottom: "10px" }}
+                                >
                                     {post.title}
                                 </Typography>
                                 <Typography variant="body2">{post.description}</Typography>
